@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Seguridad Industrial con IA</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background: #f5f7fa; }
+
+  /* NAV */
+  nav { background: #1B3A6B; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  nav .logo { color: #fff; font-size: 1.1rem; font-weight: 700; padding: 18px 0; letter-spacing: 0.5px; }
+  nav .logo span { color: #E8500A; }
+  nav ul { list-style: none; display: flex; gap: 30px; }
+  nav ul a { color: #AACCFF; text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s; }
+  nav ul a:hover { color: #fff; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #1B3A6B 0%, #0d2244 60%, #1a1a2e 100%); color: #fff; padding: 90px 40px 80px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -40%; left: -20%; width: 60%; height: 200%; background: radial-gradient(ellipse, rgba(37,99,168,0.25) 0%, transparent 70%); }
+  .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: #E8500A; }
+  .hero .badge { display: inline-block; background: rgba(232,80,10,0.2); border: 1px solid #E8500A; color: #FF8855; padding: 6px 18px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px; }
+  .hero h1 { font-size: 3rem; font-weight: 800; line-height: 1.15; margin-bottom: 16px; }
+  .hero h1 span { color: #E8500A; }
+  .hero p { font-size: 1.15rem; color: #AACCFF; max-width: 680px; margin: 0 auto 36px; line-height: 1.7; }
+  .hero .pills { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .hero .pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #dde8ff; padding: 8px 20px; border-radius: 30px; font-size: 0.88rem; font-weight: 600; }
+
+  /* SECTIONS */
+  section { padding: 70px 40px; max-width: 1100px; margin: 0 auto; }
+  .section-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #E8500A; margin-bottom: 10px; }
+  h2 { font-size: 2rem; font-weight: 800; color: #1B3A6B; margin-bottom: 14px; }
+  h2 .accent { color: #E8500A; }
+  .lead { font-size: 1.05rem; color: #555; line-height: 1.75; max-width: 750px; }
+
+  /* PROBLEMA */
+  .problema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 36px; }
+  .problema-card { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid #E8500A; }
+  .problema-card .num { font-size: 2rem; font-weight: 900; color: #E8500A; opacity: 0.3; line-height: 1; }
+  .problema-card h3 { font-size: 1rem; font-weight: 700; color: #1B3A6B; margin: 6px 0 8px; }
+  .problema-card p { font-size: 0.92rem; color: #666; line-height: 1.6; }
+
+  /* STATS */
+  .stats-bar { background: #1B3A6B; border-radius: 14px; padding: 36px 40px; margin-top: 50px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; }
+  .stat { text-align: center; }
+  .stat .num { font-size: 2.4rem; font-weight: 900; color: #fff; }
+  .stat .num span { color: #E8500A; }
+  .stat p { font-size: 0.85rem; color: #AACCFF; margin-top: 4px; }
+
+  /* SOLUCION */
+  #solucion { background: #fff; max-width: 100%; padding: 70px 40px; }
+  #solucion .inner { max-width: 1100px; margin: 0 auto; }
+  .arq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 36px; }
+  .arq-col { border-radius: 12px; overflow: hidden; }
+  .arq-col .arq-hdr { padding: 18px 24px; font-weight: 700; font-size: 1rem; color: #fff; }
+  .arq-col.existente .arq-hdr { background: #1B3A6B; }
+  .arq-col.ia .arq-hdr { background: #E8500A; }
+  .arq-col .arq-items { background: #f8faff; border: 1px solid #dde4f0; border-top: none; }
+  .arq-col.ia .arq-items { background: #fff8f5; border-color: #ffd5c0; }
+  .arq-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .arq-item:last-child { border-bottom: none; }
+  .arq-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .existente .arq-dot { background: #2563A8; }
+  .ia .arq-dot { background: #E8500A; }
+  .arq-item span { font-size: 0.93rem; color: #444; }
+
+  /* FUNCIONALIDADES */
+  .func-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+  .func-card { background: #fff; border-radius: 12px; padding: 26px 22px; box-shadow: 0 2px 14px rgba(0,0,0,0.07); transition: transform 0.2s, box-shadow 0.2s; }
+  .func-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+  .func-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; }
+  .func-icon.azul { background: #D6E4F7; }
+  .func-icon.naranja { background: #FDE8DC; }
+  .func-card h3 { font-size: 1rem; font-weight: 700; color: #1B3A6B; margin-bottom: 8px; }
+  .func-card p { font-size: 0.9rem; color: #666; line-height: 1.6; }
+  .func-tag { display: inline-block; margin-top: 12px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+  .func-tag.azul { background: #D6E4F7; color: #1B3A6B; }
+  .func-tag.naranja { background: #FDE8DC; color: #E8500A; }
+
+  /* IMPLEMENTACION */
+  #implementacion { background: #1B3A6B; max-width: 100%; padding: 70px 40px; }
+  #implementacion .inner { max-width: 1100px; margin: 0 auto; }
+  #implementacion h2 { color: #fff; }
+  #implementacion .lead { color: #AACCFF; }
+  #implementacion .section-label { color: #FF8855; }
+  .timeline { margin-top: 40px; display: flex; flex-direction: column; gap: 0; }
+  .fase { display: flex; align-items: stretch; gap: 0; }
+  .fase-num { width: 60px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .fase-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; color: #fff; flex-shrink: 0; }
+  .fase-circle.azul { background: #2563A8; }
+  .fase-circle.naranja { background: #E8500A; }
+  .fase-line { width: 2px; background: rgba(255,255,255,0.15); flex: 1; margin: 4px 0; }
+  .fase:last-child .fase-line { display: none; }
+  .fase-content { background: rgba(255,255,255,0.07); border-radius: 10px; padding: 18px 22px; margin-bottom: 12px; flex: 1; margin-left: 16px; }
+  .fase-content h3 { color: #fff; font-size: 1rem; font-weight: 700; }
+  .fase-content .tiempo { color: #FF8855; font-size: 0.82rem; font-weight: 600; margin: 2px 0 6px; }
+  .fase-content p { color: #AACCFF; font-size: 0.9rem; line-height: 1.6; }
+
+  /* BENEFICIOS */
+  .beneficios-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 36px; }
+  .beneficio-card { text-align: center; background: #fff; border-radius: 12px; padding: 28px 16px; box-shadow: 0 2px 14px rgba(0,0,0,0.07); }
+  .beneficio-num { font-size: 2.5rem; font-weight: 900; }
+  .beneficio-num.azul { color: #1B3A6B; }
+  .beneficio-num.naranja { color: #E8500A; }
+  .beneficio-card p { font-size: 0.88rem; color: #666; margin-top: 8px; line-height: 1.5; }
+  .beneficios-list { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 28px; }
+  .beneficio-item { background: #fff; border-radius: 8px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+  .beneficio-item .dot { width: 10px; height: 10px; border-radius: 50%; background: #E8500A; flex-shrink: 0; margin-top: 5px; }
+  .beneficio-item span { font-size: 0.92rem; color: #444; line-height: 1.55; }
+
+  /* TECH */
+  #tecnologia { background: #fff; max-width: 100%; padding: 70px 40px; }
+  #tecnologia .inner { max-width: 1100px; margin: 0 auto; }
+  .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+  .tech-card { border: 1px solid #dde4f0; border-radius: 10px; padding: 22px; background: #f8faff; }
+  .tech-card h3 { font-size: 0.95rem; font-weight: 700; color: #1B3A6B; margin-bottom: 10px; }
+  .tech-card ul { list-style: none; }
+  .tech-card li { font-size: 0.88rem; color: #555; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .tech-card li:last-child { border-bottom: none; }
+  .tech-card li::before { content: '→ '; color: #2563A8; font-weight: 700; }
+
+  /* CTA */
+  .cta { background: linear-gradient(135deg, #E8500A, #c73d00); color: #fff; text-align: center; padding: 60px 40px; }
+  .cta h2 { font-size: 2rem; font-weight: 800; margin-bottom: 14px; }
+  .cta p { font-size: 1.05rem; opacity: 0.9; max-width: 600px; margin: 0 auto 28px; line-height: 1.7; }
+
+  /* FOOTER */
+  footer { background: #0d1f3c; color: #778; text-align: center; padding: 24px; font-size: 0.85rem; }
+  footer span { color: #E8500A; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .arq-grid, .func-grid, .beneficios-grid, .tech-grid { grid-template-columns: 1fr; }
+    .beneficios-list { grid-template-columns: 1fr; }
+    nav ul { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">SEGURIDAD<span>INDUSTRIAL</span> · IA</div>
+  <ul>
+    <li><a href="#problema">Problema</a></li>
+    <li><a href="#solucion">Solución</a></li>
+    <li><a href="#funcionalidades">Funciones</a></li>
+    <li><a href="#implementacion">Implementación</a></li>
+    <li><a href="#beneficios">Beneficios</a></li>
+    <li><a href="#videos">Videos</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">Proyecto de Innovación · Junio 2026</div>
+  <h1>Sistema de Seguridad Industrial<br><span>con Inteligencia Artificial</span></h1>
+  <p>Protección activa de peatones en zonas industriales de riesgo mediante visión por computadora en tiempo real sobre infraestructura Dahua HDCVI existente.</p>
+  <div class="pills">
+    <div class="pill">🎥 Cámara Dahua HDCVI</div>
+    <div class="pill">🤖 YOLOv8</div>
+    <div class="pill">🦺 Detección EPP</div>
+    <div class="pill">⚠️ Alertas en Tiempo Real</div>
+    <div class="pill">🚧 Zonas Restringidas</div>
+  </div>
+</div>
+
+<!-- PROBLEMA -->
+<section id="problema">
+  <div class="section-label">El Desafío</div>
+  <h2>¿Por qué las zonas industriales <span class="accent">son peligrosas?</span></h2>
+  <p class="lead">Las plantas industriales concentran múltiples factores de riesgo simultáneos. La supervisión humana tradicional no es suficiente para detectarlos todos en tiempo real.</p>
+
+  <div class="problema-grid">
+    <div class="problema-card">
+      <div class="num">01</div>
+      <h3>Maquinaria pesada en movimiento</h3>
+      <p>Personas que ingresan a zonas de operación activa sin ser detectadas a tiempo por los operadores.</p>
+    </div>
+    <div class="problema-card">
+      <div class="num">02</div>
+      <h3>Vehículos industriales</h3>
+      <p>Montacargas, grúas y camiones que comparten espacios con peatones sin sistemas de alerta de proximidad.</p>
+    </div>
+    <div class="problema-card">
+      <div class="num">03</div>
+      <h3>Falta de EPP</h3>
+      <p>Trabajadores que ingresan a zonas de riesgo sin casco o chaleco reflectante sin que se active ninguna alerta.</p>
+    </div>
+    <div class="problema-card">
+      <div class="num">04</div>
+      <h3>Acceso no autorizado</h3>
+      <p>Ingreso a áreas restringidas como sala de máquinas o depósitos de sustancias peligrosas sin control efectivo.</p>
+    </div>
+    <div class="problema-card">
+      <div class="num">05</div>
+      <h3>Sin alertas en tiempo real</h3>
+      <p>Los accidentes se detectan solo después de ocurridos. No existe prevención activa automatizada.</p>
+    </div>
+    <div class="problema-card">
+      <div class="num">06</div>
+      <h3>Supervisión limitada por turnos</h3>
+      <p>El turno nocturno o los momentos de baja dotación reducen drásticamente la capacidad de vigilancia.</p>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="num">340<span>M</span></div><p>Accidentes laborales al año en el mundo (OIT)</p></div>
+    <div class="stat"><div class="num">60<span>%</span></div><p>De accidentes graves son prevenibles con detección temprana</p></div>
+    <div class="stat"><div class="num">24/7</div><p>Cobertura que requiere el monitoreo industrial efectivo</p></div>
+  </div>
+</section>
+
+<!-- SOLUCION -->
+<div id="solucion" style="background:#fff; padding: 70px 40px;">
+<div class="inner" style="max-width:1100px; margin:0 auto;">
+  <div class="section-label">La Propuesta</div>
+  <h2>Una capa de <span class="accent">Inteligencia Artificial</span><br>sobre tu infraestructura existente</h2>
+  <p class="lead">No es necesario cambiar las cámaras ni el DVR. El sistema agrega visión por computadora en tiempo real encima de lo que ya tienes instalado.</p>
+
+  <div class="arq-grid">
+    <div class="arq-col existente">
+      <div class="arq-hdr">🎥 Infraestructura Existente</div>
+      <div class="arq-items">
+        <div class="arq-item"><div class="arq-dot"></div><span>Cámaras Dahua DH-HAC-T1A21N-U (1080p, IR 25m)</span></div>
+        <div class="arq-item"><div class="arq-dot"></div><span>DVR Dahua con salida de red local (RTSP)</span></div>
+        <div class="arq-item"><div class="arq-dot"></div><span>Cableado coaxial ya instalado</span></div>
+        <div class="arq-item"><div class="arq-dot"></div><span>Alimentación 12V DC / 0.25A por cámara</span></div>
+      </div>
+    </div>
+    <div class="arq-col ia">
+      <div class="arq-hdr">🤖 Capa de Inteligencia IA (nueva)</div>
+      <div class="arq-items">
+        <div class="arq-item"><div class="arq-dot"></div><span>Python + OpenCV → extrae frames del stream RTSP</span></div>
+        <div class="arq-item"><div class="arq-dot"></div><span>YOLOv8 → detecta personas, EPP y vehículos</span></div>
+        <div class="arq-item"><div class="arq-dot"></div><span>Dashboard web local → alertas en tiempo real</span></div>
+        <div class="arq-item"><div class="arq-dot"></div><span>Base de datos → historial de eventos con evidencia</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FUNCIONALIDADES -->
+<section id="funcionalidades">
+  <div class="section-label">Capacidades</div>
+  <h2>¿Qué detecta y qué hace <span class="accent">el sistema?</span></h2>
+  <p class="lead">Cada función opera en tiempo real, sin intervención humana, y genera registro automático de cada evento.</p>
+
+  <div class="func-grid">
+    <div class="func-card">
+      <div class="func-icon naranja">🦺</div>
+      <h3>Detección de EPP</h3>
+      <p>YOLOv8 identifica si la persona porta casco y chaleco reflectante. Alerta inmediata si detecta a alguien sin EPP en zona de riesgo.</p>
+      <span class="func-tag naranja">Alta prioridad</span>
+    </div>
+    <div class="func-card">
+      <div class="func-icon azul">🚧</div>
+      <h3>Zona restringida</h3>
+      <p>Se definen perímetros virtuales sobre el plano de cada cámara. Alerta instantánea si una persona o vehículo cruza el límite.</p>
+      <span class="func-tag azul">Configurable</span>
+    </div>
+    <div class="func-card">
+      <div class="func-icon naranja">🚜</div>
+      <h3>Vehículo + Peatón</h3>
+      <p>Detecta simultáneamente personas y vehículos industriales. Alerta de proximidad crítica cuando convergen en la misma zona.</p>
+      <span class="func-tag naranja">Alta prioridad</span>
+    </div>
+    <div class="func-card">
+      <div class="func-icon azul">👥</div>
+      <h3>Conteo de personas</h3>
+      <p>Cuenta cuántas personas hay en cada zona en tiempo real. Alerta si se supera el aforo máximo configurado para esa área.</p>
+      <span class="func-tag azul">Automático</span>
+    </div>
+    <div class="func-card">
+      <div class="func-icon naranja">📋</div>
+      <h3>Registro de incidentes</h3>
+      <p>Guarda clip de video o captura de pantalla cada vez que se activa una alerta. Historial consultable por zona, fecha y tipo.</p>
+      <span class="func-tag naranja">Evidencia legal</span>
+    </div>
+    <div class="func-card">
+      <div class="func-icon azul">🌙</div>
+      <h3>Visión nocturna</h3>
+      <p>Aprovecha el IR de 25m de la cámara Dahua. El sistema mantiene el mismo nivel de detección en turno noche que en el día.</p>
+      <span class="func-tag azul">24/7</span>
+    </div>
+  </div>
+</section>
+
+<!-- IMPLEMENTACION -->
+<div id="implementacion" style="background:#1B3A6B; padding: 70px 40px;">
+<div class="inner" style="max-width:1100px; margin:0 auto;">
+  <div class="section-label" style="color:#FF8855;">Hoja de Ruta</div>
+  <h2 style="color:#fff;">Plan de <span style="color:#E8500A;">implementación</span></h2>
+  <p class="lead" style="color:#AACCFF;">12 semanas desde el diagnóstico hasta el sistema operativo en producción.</p>
+
+  <div class="timeline">
+    <div class="fase">
+      <div class="fase-num">
+        <div class="fase-circle azul">1</div>
+        <div class="fase-line"></div>
+      </div>
+      <div class="fase-content">
+        <h3>Diagnóstico y mapeo</h3>
+        <div class="tiempo">Semanas 1–2</div>
+        <p>Levantamiento de zonas de riesgo, mapeo de cámaras existentes y definición de perímetros virtuales por área.</p>
+      </div>
+    </div>
+    <div class="fase">
+      <div class="fase-num">
+        <div class="fase-circle naranja">2</div>
+        <div class="fase-line"></div>
+      </div>
+      <div class="fase-content">
+        <h3>Configuración técnica</h3>
+        <div class="tiempo">Semanas 3–4</div>
+        <p>Conexión del DVR a la red local, configuración de stream RTSP, instalación de entorno Python y YOLOv8.</p>
+      </div>
+    </div>
+    <div class="fase">
+      <div class="fase-num">
+        <div class="fase-circle azul">3</div>
+        <div class="fase-line"></div>
+      </div>
+      <div class="fase-content">
+        <h3>Entrenamiento IA</h3>
+        <div class="tiempo">Semanas 5–6</div>
+        <p>Recolección de imágenes del entorno real, etiquetado y fine-tuning del modelo para detectar el EPP específico de la planta.</p>
+      </div>
+    </div>
+    <div class="fase">
+      <div class="fase-num">
+        <div class="fase-circle naranja">4</div>
+        <div class="fase-line"></div>
+      </div>
+      <div class="fase-content">
+        <h3>Prueba piloto</h3>
+        <div class="tiempo">Semanas 7–8</div>
+        <p>Operación en la zona de mayor riesgo, ajuste de sensibilidad de detección y validación con el equipo de seguridad.</p>
+      </div>
+    </div>
+    <div class="fase">
+      <div class="fase-num">
+        <div class="fase-circle azul">5</div>
+      </div>
+      <div class="fase-content">
+        <h3>Despliegue total</h3>
+        <div class="tiempo">Semanas 9–12</div>
+        <p>Extensión a todas las zonas y cámaras, activación del dashboard 24/7, capacitación del equipo de seguridad industrial.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- BENEFICIOS -->
+<section id="beneficios">
+  <div class="section-label">Resultados</div>
+  <h2>Beneficios <span class="accent">esperados</span></h2>
+  <p class="lead">Impacto medible desde la primera semana de operación del sistema.</p>
+
+  <div class="beneficios-grid">
+    <div class="beneficio-card">
+      <div class="beneficio-num naranja">70%</div>
+      <p>Reducción estimada de accidentes laborales prevenibles</p>
+    </div>
+    <div class="beneficio-card">
+      <div class="beneficio-num azul">24/7</div>
+      <p>Monitoreo continuo sin fatiga ni dependencia del turno</p>
+    </div>
+    <div class="beneficio-card">
+      <div class="beneficio-num naranja">&lt;5s</div>
+      <p>Tiempo de detección y alerta ante cualquier incidente</p>
+    </div>
+    <div class="beneficio-card">
+      <div class="beneficio-num azul">100%</div>
+      <p>Eventos registrados con evidencia visual y timestamp</p>
+    </div>
+  </div>
+
+  <div class="beneficios-list">
+    <div class="beneficio-item"><div class="dot"></div><span>Cumplimiento automático de normativa de EPP por zona y por turno</span></div>
+    <div class="beneficio-item"><div class="dot"></div><span>Bajo costo de implementación: reutiliza cámaras y DVR existentes</span></div>
+    <div class="beneficio-item"><div class="dot"></div><span>Escalable a todas las cámaras de la planta sin costo adicional de hardware</span></div>
+    <div class="beneficio-item"><div class="dot"></div><span>Reduce el costo de siniestros y mutualidad por accidentes laborales</span></div>
+    <div class="beneficio-item"><div class="dot"></div><span>Evidencia visual para investigación de accidentes e informes de seguridad</span></div>
+    <div class="beneficio-item"><div class="dot"></div><span>Refuerza la cultura de seguridad — el personal adopta el uso de EPP</span></div>
+  </div>
+</section>
+
+<!-- TECNOLOGIA -->
+<div id="tecnologia" style="background:#fff; padding: 70px 40px;">
+<div class="inner" style="max-width:1100px; margin:0 auto;">
+  <div class="section-label">Stack Tecnológico</div>
+  <h2>Tecnologías <span class="accent">utilizadas</span></h2>
+  <p class="lead">Todo el software es de código abierto. No requiere licencias ni servicios en la nube.</p>
+
+  <div class="tech-grid">
+    <div class="tech-card">
+      <h3>📷 Hardware</h3>
+      <ul>
+        <li>Dahua DH-HAC-T1A21N-U (1080p, 2.8mm, IR 25m)</li>
+        <li>DVR Dahua con salida RTSP por red local</li>
+        <li>PC o mini-server para procesamiento IA</li>
+        <li>Switch de red local (no requiere internet)</li>
+      </ul>
+    </div>
+    <div class="tech-card">
+      <h3>🤖 Inteligencia Artificial</h3>
+      <ul>
+        <li>YOLOv8 (Ultralytics) — detección de objetos</li>
+        <li>OpenCV — captura y procesamiento de video</li>
+        <li>Python 3.10+ — motor principal</li>
+        <li>Fine-tuning con imágenes propias de la planta</li>
+      </ul>
+    </div>
+    <div class="tech-card">
+      <h3>📊 Dashboard y Datos</h3>
+      <ul>
+        <li>Flask — servidor web local de alertas</li>
+        <li>SQLite — base de datos de eventos</li>
+        <li>HTML/CSS/JS — interfaz de monitoreo</li>
+        <li>Notificaciones por correo o SMS (opcional)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- VIDEOS -->
+<section id="videos">
+  <div class="section-label">La Cámara en Acción</div>
+  <h2>Videos de la <span class="accent">Dahua HAC-T1A21</span></h2>
+  <p class="lead">Revisa el equipo en funcionamiento antes de planificar la instalación.</p>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 36px;">
+    <div style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,0.08);">
+      <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden;">
+        <iframe src="https://www.youtube.com/embed/4ZC4pE1yUu8" title="Dahua Cooper HAC-T1A21 2MP HDCVI IR Dome Camera" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+      </div>
+      <div style="padding:18px 20px;">
+        <div style="font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#E8500A;margin-bottom:6px;">Demo en instalación real</div>
+        <p style="font-size:0.95rem;font-weight:700;color:#1B3A6B;">Dahua HAC-T1A21 · Cámara HDCVI 2MP en funcionamiento</p>
+        <p style="font-size:0.87rem;color:#666;margin-top:6px;line-height:1.55;">Vista de la cámara instalada y operando en interiores. Muestra calidad de imagen, cobertura angular y modo nocturno IR.</p>
+      </div>
+    </div>
+    <div style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,0.08);">
+      <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden;">
+        <iframe src="https://www.youtube.com/embed/AksJRkWIxOE" title="Unboxing Dahua DH-HAC-T1A21N 2MP HDCVI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+      </div>
+      <div style="padding:18px 20px;">
+        <div style="font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#E8500A;margin-bottom:6px;">Unboxing y componentes</div>
+        <p style="font-size:0.95rem;font-weight:700;color:#1B3A6B;">Unboxing DH-HAC-T1A21N · 2MP HDCVI 3.6mm</p>
+        <p style="font-size:0.87rem;color:#666;margin-top:6px;line-height:1.55;">Revisión del contenido de la caja, componentes físicos, dimensiones y primeras impresiones del equipo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>Ninguna situación de riesgo debe pasar inadvertida</h2>
+  <p>El sistema no reemplaza al personal de seguridad — lo potencia. Detección automática, registro permanente y respuesta en segundos.</p>
+</div>
+
+<footer>
+  <p>Sistema de Seguridad Industrial con IA · <span>Dahua HDCVI + YOLOv8 + Python</span> · Junio 2026</p>
+</footer>
+
+</body>
+</html>
